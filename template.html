@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>世界国旗图鉴 · 国家和地区大全</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pri:#2563eb;--pri2:#0ea5e9;--amber:#f59e0b;
+  --ink:#1e293b;--sub:#64748b;--line:#e2e8f0;
+  --bg1:#eef6ff;--bg2:#fdf7ec;
+  --radius:16px;--shadow:0 10px 30px rgba(30,64,175,.10);
+}
+html,body{font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;color:var(--ink);min-height:100%}
+body{background:linear-gradient(160deg,var(--bg1) 0%,#f8fbff 40%,var(--bg2) 100%);background-attachment:fixed;overflow-x:hidden}
+
+/* ---------- 漂浮背景 ---------- */
+.blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.35;z-index:0;pointer-events:none;animation:drift 22s ease-in-out infinite}
+.blob.b1{width:420px;height:420px;background:#bfdbfe;top:-120px;left:-100px}
+.blob.b2{width:380px;height:380px;background:#fde68a;bottom:-120px;right:-80px;animation-delay:-8s}
+.blob.b3{width:300px;height:300px;background:#a7f3d0;top:45%;left:55%;animation-delay:-14s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.08)}66%{transform:translate(-30px,25px) scale(.95)}}
+
+/* ---------- 顶部 ---------- */
+.hero{position:relative;z-index:1;text-align:center;padding:34px 16px 14px;overflow:hidden}
+.flagwave{display:flex;justify-content:center;gap:10px;margin-bottom:18px;height:44px;opacity:.92}
+.flagwave img{width:64px;height:44px;border-radius:5px;box-shadow:0 4px 12px rgba(0,0,0,.18);transform-origin:left center;animation:wave 2.4s ease-in-out infinite}
+.flagwave img:nth-child(2n){animation-delay:-1.2s}
+.flagwave img:nth-child(3n){animation-delay:-0.6s}
+@keyframes wave{0%,100%{transform:rotate(-3deg) skewY(-1deg)}50%{transform:rotate(3deg) skewY(1deg)}}
+h1.title{font-size:clamp(30px,5vw,46px);font-weight:900;letter-spacing:4px;
+  background:linear-gradient(90deg,var(--pri),var(--pri2) 45%,var(--amber) 90%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  display:inline-block;filter:drop-shadow(0 3px 6px rgba(37,99,235,.18))}
+h1.title .em{-webkit-background-clip:initial;background-clip:initial;-webkit-text-fill-color:initial;background:none;color:var(--pri2)}
+.subtitle{margin-top:8px;color:var(--sub);font-size:14px;letter-spacing:2px}
+.hero-stats{display:flex;justify-content:center;gap:14px;margin-top:18px;flex-wrap:wrap}
+.hstat{background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:12px;padding:8px 20px;min-width:96px;
+  box-shadow:0 4px 14px rgba(30,64,175,.06)}
+.hstat b{display:block;font-size:22px;color:var(--pri);font-weight:800}
+.hstat span{font-size:12px;color:var(--sub)}
+
+/* ---------- Tab ---------- */
+.tabs{position:relative;z-index:1;display:flex;justify-content:center;gap:10px;margin:22px auto 6px}
+.tabbtn{cursor:pointer;padding:10px 30px;border-radius:999px;border:1.5px solid var(--line);background:#fff;
+  font-size:15px;font-weight:700;color:var(--sub);transition:all .25s;display:flex;align-items:center;gap:8px;
+  box-shadow:0 3px 10px rgba(30,64,175,.05)}
+.tabbtn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.tabbtn.on{background:linear-gradient(90deg,var(--pri),var(--pri2));color:#fff;border-color:transparent}
+.tabbtn .ic{font-size:18px}
+
+/* ---------- 工具栏（吸顶） ---------- */
+.toolbar{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,#eef6ff 0%,rgba(248,251,255,.94) 82%,rgba(248,251,255,0) 100%);backdrop-filter:blur(8px);padding:14px 12px 18px;margin:0}
+.toolbar .tbin{max-width:1200px;margin:0 auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
+.pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pill{cursor:pointer;padding:7px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:600;color:var(--sub);transition:all .2s}
+.pill:hover{border-color:var(--pri);color:var(--pri)}
+.pill.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.tbox{position:relative}
+.tbox input{width:230px;padding:9px 14px 9px 36px;border-radius:999px;border:1.5px solid var(--line);outline:none;font-size:14px;background:#fff;transition:border .2s}
+.tbox input:focus{border-color:var(--pri)}
+.tbox .mag{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.5}
+select.sortsel{padding:9px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:13px;color:var(--sub);outline:none;cursor:pointer}
+
+/* ---------- 卡片网格 ---------- */
+.grid{position:relative;z-index:1;max-width:1200px;margin:18px auto 40px;padding:0 16px;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:18px}
+.card{cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  transition:transform .28s cubic-bezier(.2,.8,.3,1.2),box-shadow .28s;animation:pop .45s both}
+.card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(30,64,175,.16);border-color:#bfdbfe}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.cf{position:relative;aspect-ratio:4/3;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);overflow:hidden}
+.cf img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.card:hover .cf img{transform:scale(1.1)}
+.cfb{position:absolute;top:10px;left:10px;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25);backdrop-filter:blur(3px)}
+.ci{padding:12px 14px 14px}
+.cn{font-size:17px;font-weight:800}
+.ce{font-size:12px;color:var(--sub);margin-top:1px;letter-spacing:.3px}
+.cs{display:flex;justify-content:space-between;margin-top:10px;font-size:11.5px;color:var(--sub);border-top:1px dashed var(--line);padding-top:9px}
+.cs span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{padding:70px 20px;text-align:center;color:var(--sub);font-size:15px}
+.result-info{position:relative;z-index:1;text-align:center;font-size:13px;color:var(--sub);margin-top:14px}
+
+/* ---------- 地图页 ---------- */
+#tab-map{display:none}
+.mapwrap{position:relative;z-index:1;max-width:1240px;margin:14px auto 30px;padding:0 16px}
+.map-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.map-cont{display:flex;flex-wrap:wrap;gap:6px}
+#mapBox{position:relative;width:100%;height:min(84vh,850px);background:linear-gradient(180deg,#dbeafe,#f0f9ff 60%,#e0f2fe);
+  border-radius:20px;border:1px solid #dbeafe;box-shadow:var(--shadow);overflow:hidden}
+#mapBox svg{display:block;width:100%;height:100%}
+.map-land{stroke:#fff;stroke-width:.6;cursor:pointer;transition:fill-opacity .15s}
+.map-land:hover{stroke-width:1.3;filter:brightness(1.15)}
+.grat{fill:none;stroke:#93c5fd;stroke-opacity:.35;stroke-width:.5}
+.sphere{fill:#bfdbfe;fill-opacity:.25;stroke:#93c5fd;stroke-width:1}
+.map-tip{position:fixed;z-index:60;pointer-events:none;background:rgba(255,255,255,.97);border:1px solid var(--line);
+  border-radius:10px;padding:8px 12px;box-shadow:var(--shadow);display:none;min-width:130px}
+.map-tip img{width:44px;height:30px;border-radius:3px;object-fit:cover;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.map-tip b{display:block;font-size:13px;margin-top:5px}
+.map-tip span{font-size:11px;color:var(--sub)}
+.map-ctrl{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:8px;z-index:5}
+.mbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:19px;font-weight:800;color:var(--pri);
+  cursor:pointer;box-shadow:0 3px 10px rgba(30,64,175,.12);transition:all .2s;display:flex;align-items:center;justify-content:center}
+.mbtn:hover{transform:scale(1.08);background:var(--pri);color:#fff}
+.map-legend{position:absolute;left:14px;bottom:14px;z-index:5;background:rgba(255,255,255,.92);border:1px solid var(--line);
+  border-radius:12px;padding:9px 13px;display:flex;flex-wrap:wrap;gap:7px 12px;font-size:11.5px;color:var(--sub);max-width:86%}
+.map-legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.map-cont{position:absolute;left:14px;top:14px;z-index:5;display:flex;flex-wrap:wrap;gap:6px;max-width:70%}
+.cbtn{cursor:pointer;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.94);
+  font-size:12px;font-weight:600;color:var(--sub);transition:all .2s;box-shadow:0 2px 8px rgba(30,64,175,.08)}
+.cbtn:hover{transform:translateY(-2px);color:var(--pri);border-color:var(--pri)}
+.cbtn.reset{color:var(--pri);border-color:var(--pri)}
+.map-search{position:relative;width:min(320px,100%);margin-left:auto}
+.map-search input{width:100%;padding:9px 38px 9px 34px;border-radius:999px;border:1px solid var(--line);outline:none;font-size:13.5px;background:rgba(255,255,255,.96);box-shadow:0 3px 12px rgba(30,64,175,.12)}
+.map-search input:focus{border-color:var(--pri)}
+.map-search .mag{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.5;font-size:14px}
+.map-search .go{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:none;background:var(--pri);color:#fff;
+  border-radius:999px;padding:6px 13px;font-size:12px;cursor:pointer;font-weight:700}
+.map-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:5;background:rgba(255,255,255,.85);
+  border-radius:999px;padding:5px 14px;font-size:11.5px;color:var(--sub);border:1px solid var(--line);white-space:nowrap}
+
+/* ---------- 弹窗 ---------- */
+.modal-back{position:fixed;inset:0;z-index:80;background:rgba(15,23,42,.55);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .28s}
+.modal-back.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;border-radius:22px;max-width:620px;width:100%;max-height:88vh;overflow-y:auto;position:relative;
+  transform:translateY(40px) scale(.96);transition:transform .32s cubic-bezier(.2,.9,.3,1.15);box-shadow:0 30px 80px rgba(2,6,23,.35)}
+.modal-back.show .modal{transform:none}
+.m-close{position:absolute;top:12px;right:12px;z-index:3;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.92);
+  color:var(--ink);font-size:16px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.18);transition:all .2s}
+.m-close:hover{transform:rotate(90deg);background:var(--pri);color:#fff}
+.m-flag{height:190px;background:linear-gradient(135deg,#eef2f7,#dbeafe);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.m-flag img{height:130px;max-width:78%;object-fit:contain;filter:drop-shadow(0 12px 24px rgba(2,6,23,.28));animation:mfade .5s both}
+@keyframes mfade{from{opacity:0;transform:scale(.8) rotate(-3deg)}to{opacity:1;transform:none}}
+.m-badge{position:absolute;top:16px;left:16px;color:#fff;font-size:12px;font-weight:700;padding:4px 13px;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.m-body{padding:22px 26px 26px}
+.m-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.m-head h2{font-size:28px;font-weight:900}
+.m-head .en{color:var(--sub);font-size:14px}
+.m-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 6px}
+.mstat{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.mstat .k{font-size:11px;color:var(--sub)}
+.mstat .v{font-size:13.5px;font-weight:700;margin-top:3px;line-height:1.45;word-break:break-all}
+.m-sec{margin-top:18px}
+.m-sec h3{font-size:15px;font-weight:800;display:flex;align-items:center;gap:7px;margin-bottom:10px;color:var(--ink)}
+.m-sec h3::before{content:"";width:4px;height:16px;border-radius:2px;background:linear-gradient(180deg,var(--pri),var(--pri2))}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#eff6ff;color:var(--pri);border:1px solid #bfdbfe;padding:5px 13px;border-radius:999px;font-size:12.5px;font-weight:600}
+.tour{list-style:none}
+.tour li{display:flex;gap:10px;padding:9px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:11px;margin-bottom:8px;font-size:13.5px;line-height:1.55}
+.tour li .ti{flex-shrink:0;width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#fde68a,#f59e0b);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.tour b{color:var(--pri)}
+.m-intro{font-size:14px;line-height:1.95;color:#334155;text-align:justify;background:#fbfdff;border-left:3px solid #bfdbfe;padding:12px 16px;border-radius:0 12px 12px 0}
+.m-actions{display:flex;gap:12px;margin-top:22px}
+.mbtn2{flex:1;padding:12px;border-radius:12px;border:none;font-size:14.5px;font-weight:700;cursor:pointer;transition:all .2s}
+.mbtn2.map{background:linear-gradient(90deg,var(--pri),var(--pri2));color:#fff}
+.mbtn2.map:hover{filter:brightness(1.1);transform:translateY(-2px)}
+.mbtn2.close{background:#f1f5f9;color:var(--sub)}
+.mbtn2.close:hover{background:#e2e8f0}
+
+/* ---------- 底部 ---------- */
+footer{position:relative;z-index:1;text-align:center;padding:26px 16px 34px;color:var(--sub);font-size:12px;line-height:1.9}
+
+/* ---------- 回到顶部 ---------- */
+#toTop{position:fixed;right:26px;bottom:30px;z-index:70;width:48px;height:48px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-size:22px;font-weight:800;cursor:pointer;
+  box-shadow:0 10px 24px rgba(37,99,235,.4);opacity:0;pointer-events:none;transform:translateY(16px);transition:all .3s}
+#toTop.show{opacity:1;pointer-events:auto;transform:none}
+#toTop:hover{transform:translateY(-4px)}
+
+/* ---------- Toast ---------- */
+#toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(80px);z-index:99;background:rgba(15,23,42,.92);color:#fff;
+  padding:11px 22px;border-radius:999px;font-size:13.5px;opacity:0;transition:all .35s;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:768px){
+  .flagwave{height:34px;gap:6px}
+  .flagwave img{width:50px;height:34px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .card .cs{font-size:10.5px}
+  #mapBox{height:62vh}
+  .m-stats{grid-template-columns:repeat(2,1fr)}
+  .m-body{padding:18px 16px 22px}
+  .m-flag{height:150px}
+  .m-flag img{height:100px}
+  .map-cont{max-width:96%}
+  .map-cont .cbtn{padding:4px 9px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<header class="hero">
+  <div class="flagwave" id="flagWave"></div>
+  <h1 class="title"><span class="em">🌏</span>世界国旗图鉴 -- Toobey</h1>
+  <div class="subtitle">World Flag Encyclopedia · 国家和地区大全</div>
+  <div class="hero-stats" id="heroStats"></div>
+</header>
+
+<div class="tabs">
+  <div class="tabbtn on" id="tabBtnCards" onclick="switchTab('cards')"><span class="ic">🏳️</span>卡片图鉴</div>
+  <div class="tabbtn" id="tabBtnMap" onclick="switchTab('map')"><span class="ic">🗺️</span>世界地图</div>
+</div>
+
+<!-- 卡片页 -->
+<section id="tab-cards">
+  <div class="toolbar">
+    <div class="tbin">
+      <div class="pills" id="pills"></div>
+      <div class="tbox"><span class="mag">🔍</span><input id="q" placeholder="搜索国家 / 地区 / 首都…" oninput="renderCards()"></div>
+      <select class="sortsel" id="sortSel" onchange="renderCards()">
+        <option value="default">默认排序</option>
+        <option value="name">按名称排序</option>
+        <option value="pop">按人口 ↓</option>
+        <option value="area">按面积 ↓</option>
+      </select>
+    </div>
+  </div>
+  <div class="result-info" id="resultInfo"></div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- 地图页 -->
+<section id="tab-map">
+  <div class="mapwrap">
+    <div class="map-toolbar">
+      <div class="map-cont" id="mapCont"></div>
+      <div class="map-search"><span class="mag">🔍</span>
+        <input id="mapQ" placeholder="输入国家名，地图定位…" onkeydown="if(event.key==='Enter')mapSearch()">
+        <button class="go" onclick="mapSearch()">定位</button>
+      </div>
+    </div>
+    <div id="mapBox">
+      <div class="map-ctrl">
+        <button class="mbtn" title="放大" onclick="mapZoom(1.6)">＋</button>
+        <button class="mbtn" title="缩小" onclick="mapZoom(1/1.6)">－</button>
+        <button class="mbtn" title="复位" onclick="mapReset()">⟲</button>
+      </div>
+      <div class="map-legend" id="mapLegend"></div>
+      <div class="map-hint">🖱 滚轮缩放 · 拖拽平移 · 点击国家查看详情</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  📊 数据为公开资料约数（2020-2024），仅供参考 · 国旗来源 flag-icons · 地图数据 Natural Earth<br>
+  Toobey · 世界国旗图鉴 · 2026
+</footer>
+
+<button id="toTop" title="回到顶部" onclick="backTop()">↑</button>
+
+<!-- 详情弹窗 -->
+<div class="modal-back" id="modalBack" onclick="if(event.target===this)closeDetail()">
+  <div class="modal">
+    <button class="m-close" onclick="closeDetail()">✕</button>
+    <div class="m-flag" id="mFlagWrap">
+      <span class="m-badge" id="mBadge"></span>
+      <img id="mFlag" alt="">
+    </div>
+    <div class="m-body">
+      <div class="m-head"><h2 id="mZh"></h2><span class="en" id="mEn"></span></div>
+      <div class="m-stats" id="mStats"></div>
+      <div class="m-sec"><h3>自然资源</h3><div class="chips" id="mRes"></div></div>
+      <div class="m-sec"><h3>旅游经典</h3><ul class="tour" id="mTour"></ul></div>
+      <div class="m-sec"><h3>详细介绍</h3><p class="m-intro" id="mIntro"></p></div>
+      <div class="m-actions">
+        <button class="mbtn2 map" onclick="viewOnMap()">🗺 在地图上查看</button>
+        <button class="mbtn2 close" onclick="closeDetail()">关 闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="map-tip" id="mapTip"></div>
+<div id="toast"></div>
+
+<script>
+__HERMES_D3_JS__
+__HERMES_TOPO_JS__
+</script>
+<script>
+/* ================== 数据 ================== */
+var CONTINENTS=["亚洲","欧洲","非洲","北美洲","南美洲","大洋洲"];
+var CC={亚洲:"#f59e0b",欧洲:"#3b82f6",非洲:"#10b981",北美洲:"#ef4444",南美洲:"#8b5cf6",大洋洲:"#14b8a6"};
+var FLAGBASE="https://cdn.jsdelivr.net/npm/flag-icons@7.3.2/flags/4x3/";
+var COUNTRIES=__HERMES_DATA_JSON__;
+var BY_CODE={};COUNTRIES.forEach(function(c){BY_CODE[c.code]=c});
+var BY_NUM={};COUNTRIES.forEach(function(c){if(c.num)BY_NUM[String(c.num)]=c});
+
+function flagURL(code){return FLAGBASE+code+".svg"}
+function hexA(hex,a){var n=parseInt(hex.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")"}
+function flagErr(img){
+  if(img.dataset.fb)return;
+  img.dataset.fb="1";
+  var code=img.dataset.code||(img.getAttribute("alt")||"").replace("国旗","").slice(0,2);
+  var hue=(code.charCodeAt(0)*47+code.charCodeAt(1||0)*31)%360;
+  var svg="<svg xmlns='http://www.w3.org/2000/svg' width='160' height='120'>"+
+    "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>"+
+    "<stop offset='0' stop-color='hsl("+hue+",72%,60%)'/>"+
+    "<stop offset='1' stop-color='hsl("+((hue+70)%360)+",65%,42%)'/></linearGradient></defs>"+
+    "<rect width='160' height='120' fill='url(#g)'/>"+
+    "<text x='80' y='70' font-size='34' fill='rgba(255,255,255,.92)' text-anchor='middle' font-family='Arial' font-weight='bold'>"+code.toUpperCase()+"</text></svg>";
+  img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+}
+function popNum(c){var m=(c.population||"").match(/([\d.]+)\s*([万亿千])?/);if(!m)return 0;var n=parseFloat(m[1]),u=m[2]||"";return u==="亿"?n*1e8:u==="万"?n*1e4:u==="千"?n*1e3:n}
+function areaNum(c){var m=(c.area||"").match(/([\d.]+)\s*([万亿千])?/);if(!m)return 0;var n=parseFloat(m[1]),u=m[2]||"";return u==="亿"?n*1e8:u==="万"?n*1e4:n}
+
+/* ================== 首页动效 ================== */
+(function(){
+  var wave=document.getElementById("flagWave");
+  var pick=["cn"], seen={cn:1};   // 中国国旗固定保留
+  while(pick.length<10){var c=COUNTRIES[Math.floor(Math.random()*COUNTRIES.length)];
+    if(!seen[c.code]){seen[c.code]=1;pick.push(c.code)}}
+  wave.innerHTML=pick.map(function(co){return '<img src="'+flagURL(co)+'" onerror="flagErr(this)" data-code="'+co+'" alt="'+co+'国旗">'}).join("");
+  var totalPop=0;COUNTRIES.forEach(function(c){totalPop+=popNum(c)});
+  document.getElementById("heroStats").innerHTML=
+    '<div class="hstat"><b>'+COUNTRIES.length+'</b><span>国家 / 地区</span></div>'+
+    '<div class="hstat"><b>6</b><span>大洲</span></div>'+
+    '<div class="hstat"><b>约'+(totalPop/1e8).toFixed(1)+'亿</b><span>覆盖人口</span></div>'+
+    '<div class="hstat"><b>'+COUNTRIES.filter(function(c){return c.resources&&c.resources.length}).reduce(function(s,c){return s+c.resources.length},0)+'</b><span>资源条目</span></div>';
+})();
+
+/* ================== 卡片页 ================== */
+var state={continent:"全部",query:""};
+function switchTab(t){
+  var cards=document.getElementById("tab-cards"),map=document.getElementById("tab-map");
+  document.getElementById("tabBtnCards").classList.toggle("on",t==="cards");
+  document.getElementById("tabBtnMap").classList.toggle("on",t==="map");
+  cards.style.display=t==="cards"?"block":"none";
+  map.style.display=t==="map"?"block":"none";
+  if(t==="map"){setTimeout(function(){initMap()},60);setTimeout(function(){mapReset()},260)}
+}
+function buildPills(){
+  var el=document.getElementById("pills");
+  var html='<span class="pill on" onclick="setCont(\'全部\',this)">🌍 全部</span>';
+  CONTINENTS.forEach(function(ct){html+='<span class="pill" onclick="setCont(\''+ct+'\',this)">'+ct+'</span>'});
+  el.innerHTML=html;
+}
+function setCont(ct,el){
+  state.continent=ct;
+  el.parentNode.querySelectorAll(".pill").forEach(function(p){p.classList.remove("on")});
+  el.classList.add("on");renderCards();
+}
+function filtered(){
+  var q=state.query.toLowerCase();
+  var list=COUNTRIES.filter(function(c){
+    if(state.continent!=="全部"&&c.continent!==state.continent)return false;
+    if(!q)return true;
+    return (c.zh+" "+c.en+" "+c.capital+" "+c.continent+" "+c.code).toLowerCase().indexOf(q)>=0;
+  });
+  var s=document.getElementById("sortSel").value;
+  if(s==="name")list.sort(function(a,b){return a.zh.localeCompare(b.zh,"zh")});
+  else if(s==="pop")list.sort(function(a,b){return popNum(b)-popNum(a)});
+  else if(s==="area")list.sort(function(a,b){return areaNum(b)-areaNum(a)});
+  return list;
+}
+function renderCards(){
+  state.query=document.getElementById("q").value.trim();
+  var list=filtered();
+  document.getElementById("resultInfo").textContent="共 "+list.length+" 个国家/地区（总计 "+COUNTRIES.length+"）";
+  var grid=document.getElementById("grid");
+  if(!list.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1">😢 没有找到匹配的国家或地区</div>';return}
+  grid.innerHTML=list.map(function(c,i){
+    return '<div class="card" data-code="'+c.code+'" style="animation-delay:'+(i%24*0.02)+'s" onclick="openDetail(\''+c.code+'\')">'+
+      '<div class="cf"><img loading="lazy" src="'+flagURL(c.code)+'" data-code="'+c.code+'" onerror="flagErr(this)" alt="'+c.zh+'国旗">'+
+      '<span class="cfb" style="background:'+hexA(CC[c.continent],0.72)+'">'+c.continent+'</span></div>'+
+      '<div class="ci"><div class="cn">'+c.zh+'</div><div class="ce">'+c.en+'</div>'+
+      '<div class="cs"><span>🏛 '+c.capital+'</span><span>👥 '+String(c.population).split("（")[0]+'</span></div></div></div>';
+  }).join("");
+}
+
+/* ================== 详情弹窗 ================== */
+var currentCode=null;
+function openDetail(code){
+  var c=BY_CODE[code];if(!c)return;
+  currentCode=code;
+  var mf=document.getElementById("mFlag");
+  mf.dataset.code=code;mf.src=flagURL(code);mf.alt=c.zh+"国旗";
+  document.getElementById("mBadge").textContent=c.continent;
+  document.getElementById("mBadge").style.background=CC[c.continent];
+  document.getElementById("mZh").textContent=c.zh;
+  document.getElementById("mEn").textContent=c.en;
+  document.getElementById("mStats").innerHTML=
+    stat("🏛",c.cap_title||"首都",c.capital)+stat("🗺","面积",c.area)+stat("👥","人口",c.population)+
+    stat("🗣","语言",c.language)+stat("💰","货币",c.currency)+stat("🌍","大洲",c.continent);
+  document.getElementById("mRes").innerHTML=(c.resources||[]).map(function(r){return '<span class="chip">'+r+'</span>'}).join("")||'<span class="chip" style="background:#f8fafc;color:#94a3b8">暂无数据</span>';
+  document.getElementById("mTour").innerHTML=(c.tourism||[]).map(function(t,i){
+    var p=t.split("：");var nm=p[0],ds=p.slice(1).join("：");
+    return '<li><span class="ti">'+(i+1)+'</span><span><b>'+nm+'</b>：'+ds+'</span></li>';
+  }).join("")||'<li style="background:#f8fafc"><span class="ti">—</span><span>暂无数据</span></li>';
+  document.getElementById("mIntro").textContent=c.intro||"暂无介绍";
+  document.getElementById("modalBack").classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function stat(k,k2,v){return '<div class="mstat"><div class="k">'+k+' '+k2+'</div><div class="v">'+v+'</div></div>'}
+function closeDetail(){
+  document.getElementById("modalBack").classList.remove("show");
+  document.body.style.overflow="";
+  currentCode=null;
+}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDetail()});
+function viewOnMap(){
+  var code=currentCode;             // 先取再关，closeDetail 会清空 currentCode
+  closeDetail();switchTab("map");
+  setTimeout(function(){
+    if(code){flyToCountry(code,true)}
+  },380);
+}
+
+/* ================== 地图页 ================== */
+var world=__HERMES_WORLD_JSON__;
+var mapInited=false,svgG=null,svgSel=null,proj=null,pathFn=null,zoomFn=null,feats=[],mapLastCode=null;
+var lastMapCode=null;
+
+function initMap(){
+  if(mapInited)return;
+  mapInited=true;
+  var box=document.getElementById("mapBox");
+  var w=box.clientWidth,h=box.clientHeight;
+  if(w<10)w=1000;if(h<10)h=600;
+  svgSel=d3.select(box).append("svg").attr("width",w).attr("height",h);
+  svgG=svgSel.append("g");
+  proj=d3.geoNaturalEarth1().rotate([-150,0]).fitSize([w,h],{type:"Sphere"});  // 中国居中偏左、美洲完整居右
+  pathFn=d3.geoPath(proj);
+  feats=topojson.feature(world,world.objects.countries).features;
+  zoomFn=d3.zoom().scaleExtent([1,10]).clickDistance(5)
+    .on("zoom",function(event){svgG.attr("transform",event.transform)});
+  svgSel.call(zoomFn);
+  svgG.append("path").datum(d3.geoGraticule10()).attr("d",pathFn).attr("class","grat");
+  svgG.append("path").datum({type:"Sphere"}).attr("d",pathFn).attr("class","sphere");
+  var sel=svgG.append("g").selectAll("path").data(feats).enter().append("path")
+    .attr("d",pathFn)
+    .attr("class","map-land")
+    .attr("fill",function(d){var c=BY_NUM[d.id];return c?CC[c.continent]:"#cbd5e1"})
+    .attr("fill-opacity",function(d){return BY_NUM[d.id]?0.62:0.5})
+    .on("mouseover",function(event,d){
+      d3.select(this).attr("fill-opacity",function(){return BY_NUM[d.id]?0.95:0.75});
+      var c=BY_NUM[d.id];
+      var tip=document.getElementById("mapTip");
+      tip.innerHTML=(c?'<img src="'+flagURL(c.code)+'" data-code="'+c.code+'" onerror="flagErr(this)" alt="'+c.zh+'国旗"><b>'+c.zh+'</b><span>'+c.en+'</span>':'<b>'+(d.properties.name||"")+'</b><span>未收录详细数据</span>');
+      tip.style.display="block";
+    })
+    .on("mousemove",function(event){
+      var tip=document.getElementById("mapTip");
+      tip.style.left=(event.clientX+14)+"px";tip.style.top=(event.clientY-10)+"px";
+    })
+    .on("mouseout",function(event,d){
+      d3.select(this).attr("fill-opacity",function(){return BY_NUM[d.id]?0.62:0.5});
+      document.getElementById("mapTip").style.display="none";
+    })
+    .on("click",function(event,d){
+      var c=BY_NUM[d.id];
+      if(c){lastMapCode=c.code;openDetail(c.code)}
+      else toast("该区域暂未收录详情");
+    });
+  // 大洲定位按钮
+  var conts=['<button class="cbtn reset" onclick="mapReset()">🌍 全球</button>'];
+  CONTINENTS.forEach(function(ct){conts.push('<button class="cbtn" onclick="flyToContinent(\''+ct+'\')">'+ct+'</button>')});
+  document.getElementById("mapCont").innerHTML=conts.join("");
+  // 图例
+  document.getElementById("mapLegend").innerHTML=CONTINENTS.map(function(ct){
+    return '<span><i style="background:'+CC[ct]+'"></i>'+ct+'</span>'}).join("")+
+    '<span><i style="background:#cbd5e1"></i>未收录</span>';
+  // 窗口变化重建
+  window.addEventListener("resize",function(){rebuildMap()});
+}
+function rebuildMap(){
+  if(!mapInited)return;
+  var box=document.getElementById("mapBox");
+  var w=box.clientWidth,h=box.clientHeight;
+  svgSel.attr("width",w).attr("height",h);
+  proj.fitSize([w,h],{type:"Sphere"});
+  pathFn=d3.geoPath(proj);
+  svgG.selectAll(".map-land").attr("d",pathFn);
+  svgG.select(".grat").attr("d",pathFn);
+  svgG.select(".sphere").attr("d",pathFn);
+  mapReset();
+}
+function mapZoom(k){
+  if(!mapInited)return;
+  var box=document.getElementById("mapBox"),w=box.clientWidth,h=box.clientHeight;
+  var t=d3.zoomTransform(svgSel.node());
+  var nk=Math.min(10,Math.max(1,t.k*k));          // 限制在 scaleExtent 内
+  var cx=w/2,cy=h/2;                               // 围绕视口中心缩放：保持中心点映射不变
+  var nx=cx-(cx-t.x)*nk/t.k;
+  var ny=cy-(cy-t.y)*nk/t.k;
+  svgSel.transition().duration(300).call(zoomFn.transform,d3.zoomIdentity.translate(nx,ny).scale(nk));
+}
+function mapReset(){
+  if(!mapInited)return;
+  svgSel.transition().duration(700).call(zoomFn.transform,d3.zoomIdentity);
+}
+function zoomToBounds(bounds,pad){
+  var box=document.getElementById("mapBox"),w=box.clientWidth,h=box.clientHeight;
+  var dx=bounds[1][0]-bounds[0][0],dy=bounds[1][1]-bounds[0][1];
+  if(!dx&&!dy)return mapReset();
+  var s=0.92/Math.max(dx/w,dy/h);
+  s=Math.max(1,Math.min(9,s));
+  var tx=w/2-s*(bounds[0][0]+bounds[1][0])/2,ty=h/2-s*(bounds[0][1]+bounds[1][1])/2;
+  svgSel.transition().duration(850).call(zoomFn.transform,d3.zoomIdentity.translate(tx,ty).scale(s));
+}
+function flyToContinent(ct){
+  if(!mapInited)return;
+  var fs=feats.filter(function(f){var c=BY_NUM[f.id];return c&&c.continent===ct});
+  if(!fs.length){toast("该大洲地图暂无可定位区域");return}
+  var b=null;
+  fs.forEach(function(f){var bb=pathFn.bounds(f);if(!b)b=bb;else{b[0][0]=Math.min(b[0][0],bb[0][0]);b[0][1]=Math.min(b[0][1],bb[0][1]);b[1][0]=Math.max(b[1][0],bb[1][0]);b[1][1]=Math.max(b[1][1],bb[1][1])}});
+  zoomToBounds(b);
+}
+function flyToCountry(code,showModal){
+  if(!mapInited)return;
+  var c=BY_CODE[code];if(!c)return;
+  var f=feats.find(function(x){return String(x.id)===String(c.num)});
+  if(!f){toast(c.zh+" 面积过小，地图上无独立轮廓，已展示详情卡片");if(showModal)openDetail(code);return}
+  zoomToBounds(pathFn.bounds(f));
+  if(showModal)openDetail(code);
+}
+function mapSearch(){
+  if(!mapInited)initMap();
+  var q=document.getElementById("mapQ").value.trim().toLowerCase();
+  if(!q)return;
+  var hit=null;
+  COUNTRIES.some(function(c){if((c.zh+" "+c.en+" "+c.capital).toLowerCase().indexOf(q)>=0){hit=c;return true}return false});
+  if(!hit){toast("未找到："+q);return}
+  lastMapCode=hit.code;
+  flyToCountry(hit.code,true);
+}
+
+/* ================== 工具 ================== */
+var toastTimer=null;
+function toast(msg){
+  var t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove("show")},2400);
+}
+
+/* ================== 启动 ================== */
+buildPills();
+renderCards();
+window.addEventListener("scroll",function(){document.getElementById("toTop").classList.toggle("show",window.scrollY>300)});
+function backTop(){window.scrollTo({top:0,behavior:"smooth"})}
+</script>
+</body>
+</html>
